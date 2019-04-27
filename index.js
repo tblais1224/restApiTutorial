@@ -8,6 +8,10 @@ const app = express();
 //connect to mongo db
 mongoose.connect('mongodb://localhost/pokemondex');
 mongoose.Promise = global.Promise;
+
+
+app.use(express.static('public'));
+
 // app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 

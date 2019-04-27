@@ -2,13 +2,21 @@ const express = require("express");
 const router = express.Router();
 const Pokemon = require("../models/pokemon");
 
-//get list of pokemon from the database
+//get list of pokemon from the database that are near input location
 router.get("/pokemon", (req, res, next) => {
-    // Pokemon.find({}).then(function(pokemon){
-    //     res.send(pokemon);
-    // });
+    Pokemon.aggregate([{
+        $geoNear: {
+            near: { type: "Point", coordinates: [parseFloat(req.query.lng), parseFloat(req.query.lat)] },
+            distanceField: "dist.calculated",
+            maxDistance: 100000,
+            // query: { type: "public" },
+            // includeLocs: "dist.location",
+            // num: 5,
+            spherical: true
+        }
+    }]).then(function(pokemon) { res.send(pokemon) });
 });
-
+ 
 //add pokemon to the db
 //catch(next) is for error handling, next middle ware is called
 router.post("/pokemon", (req, res, next) => {
